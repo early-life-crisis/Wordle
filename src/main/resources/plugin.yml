@@ -1,0 +1,7 @@
+name: Wordle
+version: 1.0
+main: dev.ash.wordle.WordleMain
+api-version: 1.20
+commands:
+  wordle:
+
