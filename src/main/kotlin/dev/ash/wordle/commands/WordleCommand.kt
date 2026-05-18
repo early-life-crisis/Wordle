@@ -1,8 +1,10 @@
 package dev.ash.wordle.commands
 
 import dev.ash.wordle.util.Dictionary
+import dev.ash.wordle.util.PlayersInGame
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.minecraft.commands.arguments.UuidArgument.uuid
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -15,20 +17,41 @@ class WordleCommand : CommandExecutor {
         label: String,
         args: Array<out String>
     ): Boolean {
+        if (sender !is Player){
+            sender.sendMessage(Component.text("Эту команду может использовать только игрок.").
+            color(NamedTextColor.RED))
+            return true
+        }
+        val uuid = sender.uniqueId.toString()
+        val isInGame = PlayersInGame.isPlayerInGame(uuid)
         when{
-            sender !is Player ->{
-                sender.sendMessage(Component.text("Эту команду может использовать только игрок.").
+            args[0] == "stop" -> {
+                if (PlayersInGame.isPlayerInGame(uuid)){
+                    PlayersInGame.removePlayer(uuid)
+                    sender.sendMessage(Component.text("Вы успешно вышли из игры.").
+                    color(NamedTextColor.GREEN))
+                    return true
+                }
+                sender.sendMessage(Component.text("Вы не в игре.").
                 color(NamedTextColor.RED))
                 return true
             }
+
             args.size != 1 || args[0] != "start" ->{
                 sender.sendMessage(Component.text("Использование /wordle <start>").
                 color(NamedTextColor.RED))
                 return true
             }
+            isInGame ->{
+                sender.sendMessage(Component.text("Вы уже в игре.").
+                color(NamedTextColor.RED))
+                return true
+            }
         }
+
         sender.sendMessage(Component.text("Игра началась! Удачи").color(NamedTextColor.GREEN))
         sender.sendMessage(Component.text(Dictionary.words.random()))
+        PlayersInGame.addPlayer(uuid)
         return true
     }
 }
