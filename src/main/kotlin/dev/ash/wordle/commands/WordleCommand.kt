@@ -1,5 +1,6 @@
 package dev.ash.wordle.commands
 
+import dev.ash.wordle.util.Dictionary
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
@@ -27,6 +28,7 @@ class WordleCommand : CommandExecutor {
             }
         }
         sender.sendMessage(Component.text("Игра началась! Удачи").color(NamedTextColor.GREEN))
+        sender.sendMessage(Component.text(Dictionary.words.random()))
         return true
     }
 }
