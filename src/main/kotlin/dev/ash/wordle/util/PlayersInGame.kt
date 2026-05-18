@@ -1,18 +1,27 @@
 package dev.ash.wordle.util
 
-object PlayersInGame {
-    private val players: MutableMap<String, Int> = mutableMapOf()
+data class GameSession(
+    val word: String,
+    var triesLeft: Int = 6
+)
 
-    fun addPlayer(uuid: String){
-        players[uuid] = 6
+object PlayersInGame{
+    private val players: MutableMap<String, GameSession> = mutableMapOf()
+
+    fun addPlayer(uuid: String, gameSession: GameSession){
+        players[uuid] = gameSession
     }
 
     fun isPlayerInGame(uuid: String) : Boolean{
-        return players.containsKey(uuid)
+        return players.contains(uuid)
     }
 
     fun getTries(uuid: String) : Int{
-        return players[uuid] ?: 0
+        return players[uuid]!!.triesLeft
+    }
+
+    fun getWord(uuid: String) : String{
+        return players[uuid]!!.word
     }
 
     fun removePlayer(uuid: String){

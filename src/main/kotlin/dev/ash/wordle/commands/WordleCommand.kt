@@ -1,6 +1,7 @@
 package dev.ash.wordle.commands
 
 import dev.ash.wordle.util.Dictionary
+import dev.ash.wordle.util.GameSession
 import dev.ash.wordle.util.PlayersInGame
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -25,6 +26,12 @@ class WordleCommand : CommandExecutor {
         val uuid = sender.uniqueId.toString()
         val isInGame = PlayersInGame.isPlayerInGame(uuid)
         when{
+            args.isEmpty() ->{
+                sender.sendMessage(Component.text("Использование - /worlde start|stop").
+                color(NamedTextColor.RED))
+                return true
+            }
+
             args[0] == "stop" -> {
                 if (PlayersInGame.isPlayerInGame(uuid)){
                     PlayersInGame.removePlayer(uuid)
@@ -42,6 +49,7 @@ class WordleCommand : CommandExecutor {
                 color(NamedTextColor.RED))
                 return true
             }
+
             isInGame ->{
                 sender.sendMessage(Component.text("Вы уже в игре.").
                 color(NamedTextColor.RED))
@@ -49,9 +57,11 @@ class WordleCommand : CommandExecutor {
             }
         }
 
+        val word = Dictionary.words.random()
+        sender.sendMessage(Component.text(word))
+        PlayersInGame.addPlayer(uuid, GameSession(word))
+
         sender.sendMessage(Component.text("Игра началась! Удачи").color(NamedTextColor.GREEN))
-        sender.sendMessage(Component.text(Dictionary.words.random()))
-        PlayersInGame.addPlayer(uuid)
         return true
     }
 }
