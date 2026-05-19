@@ -1,5 +1,6 @@
 package dev.ash.wordle.listeners
 
+import dev.ash.wordle.util.Dictionary
 import dev.ash.wordle.util.HasSameChars
 import dev.ash.wordle.util.PlayersInGame
 import io.papermc.paper.event.player.AsyncChatEvent
@@ -8,6 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import java.util.Locale.getDefault
 
 class ChatListener : Listener {
     @EventHandler
@@ -17,6 +19,13 @@ class ChatListener : Listener {
 
         if (PlayersInGame.isPlayerInGame(uuid)){
             val message = PlainTextComponentSerializer.plainText().serialize(e.message())
+            e.isCancelled = true
+            if (!Dictionary.words.contains(message.uppercase(getDefault()))){
+                player.sendMessage(Component.text("Такого слова не существует.").
+                color(NamedTextColor.RED))
+                return
+            }
+
             val word = PlayersInGame.getWord(uuid)
 
             when{
