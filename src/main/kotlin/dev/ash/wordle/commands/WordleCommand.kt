@@ -5,13 +5,13 @@ import dev.ash.wordle.util.GameSession
 import dev.ash.wordle.util.PlayersInGame
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.minecraft.commands.arguments.UuidArgument.uuid
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class WordleCommand : CommandExecutor {
+class WordleCommand : CommandExecutor, TabCompleter {
     override fun onCommand(
         sender: CommandSender,
         command: Command,
@@ -58,10 +58,22 @@ class WordleCommand : CommandExecutor {
         }
 
         val word = Dictionary.words.random()
-        sender.sendMessage(Component.text(word))
         PlayersInGame.addPlayer(uuid, GameSession(word))
 
         sender.sendMessage(Component.text("Игра началась! Удачи").color(NamedTextColor.GREEN))
         return true
+    }
+
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        alias: String,
+        args: Array<out String>
+    ): List<String> {
+
+        if (args.size == 1) {
+            return listOf("start", "stop")
+        }
+        return listOf()
     }
 }

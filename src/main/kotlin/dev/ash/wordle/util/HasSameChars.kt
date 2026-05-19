@@ -2,7 +2,6 @@ package dev.ash.wordle.util
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import java.util.Locale
 import java.util.Locale.getDefault
 
 object HasSameChars {
