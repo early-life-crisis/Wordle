@@ -6,6 +6,7 @@ import dev.ash.wordle.util.PlayersInGame
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -32,6 +33,13 @@ class ChatListener : Listener {
                 PlayersInGame.getTries(uuid) == 1 && !message.equals(word, ignoreCase = true) ->{
                     player.sendMessage(Component.text("Вы не смогли угадать слово, попытки закончились.").
                     color(NamedTextColor.RED))
+
+                    player.sendMessage(Component.text("Загаданное слово - ").
+                    color(NamedTextColor.GRAY).
+                    append(Component.text(word)).
+                    color(NamedTextColor.GREEN).
+                    decoration(TextDecoration.BOLD, true))
+
                     PlayersInGame.removePlayer(uuid)
                 }
                 message.equals(word, ignoreCase = true) ->{
