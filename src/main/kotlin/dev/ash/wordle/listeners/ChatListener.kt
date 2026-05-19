@@ -1,5 +1,6 @@
 package dev.ash.wordle.listeners
 
+import dev.ash.wordle.util.HasSameChars
 import dev.ash.wordle.util.PlayersInGame
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
@@ -16,14 +17,18 @@ class ChatListener : Listener {
 
         if (PlayersInGame.isPlayerInGame(uuid)){
             val message = PlainTextComponentSerializer.plainText().serialize(e.message())
+            val word = PlayersInGame.getWord(uuid)
             when {
-                message == PlayersInGame.getWord(uuid) ->{
+                message.equals(word, ignoreCase = true) ->{
                     PlayersInGame.removePlayer(uuid)
                     player.sendMessage(Component.text("Вы угадали слово.").
                     color(NamedTextColor.GREEN))
                 }
-                else -> player.sendMessage(Component.text("Попробуйте ещё раз!").
-                color(NamedTextColor.RED))
+                else -> {
+                    player.sendMessage(Component.text("Попробуйте ещё раз!").
+                    color(NamedTextColor.RED))
+                    player.sendMessage(HasSameChars.hasSameChars(message, word))
+                }
             }
 
         }
