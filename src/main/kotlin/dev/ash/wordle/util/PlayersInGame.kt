@@ -16,6 +16,10 @@ object PlayersInGame{
         return players.contains(uuid)
     }
 
+    fun removeTry(uuid: String){
+        players[uuid]!!.triesLeft -= 1
+    }
+
     fun getTries(uuid: String) : Int{
         return players[uuid]!!.triesLeft
     }

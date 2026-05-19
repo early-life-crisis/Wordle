@@ -18,19 +18,26 @@ class ChatListener : Listener {
         if (PlayersInGame.isPlayerInGame(uuid)){
             val message = PlainTextComponentSerializer.plainText().serialize(e.message())
             val word = PlayersInGame.getWord(uuid)
-            when {
-                message.equals(word, ignoreCase = true) ->{
+
+            when{
+                PlayersInGame.getTries(uuid) == 1 && !message.equals(word, ignoreCase = true) ->{
+                    player.sendMessage(Component.text("Вы не смогли угадать слово, попытки закончились.").
+                    color(NamedTextColor.RED))
                     PlayersInGame.removePlayer(uuid)
+                }
+                message.equals(word, ignoreCase = true) ->{
                     player.sendMessage(Component.text("Вы угадали слово.").
                     color(NamedTextColor.GREEN))
+                    PlayersInGame.removePlayer(uuid)
                 }
                 else -> {
-                    player.sendMessage(Component.text("Попробуйте ещё раз!").
-                    color(NamedTextColor.RED))
                     player.sendMessage(HasSameChars.hasSameChars(message, word))
+                    PlayersInGame.removeTry(uuid)
+                    player.sendMessage(Component.text("Неправильное слово, осталось ${PlayersInGame.getTries(uuid)} попыток.").
+                    color(NamedTextColor.RED))
                 }
-            }
 
+            }
         }
     }
 }
